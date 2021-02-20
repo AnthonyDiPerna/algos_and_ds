@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #define SIZE (6)
 
 
@@ -72,6 +73,78 @@ void selection_sort(int * arr, int len)
   }  
 }
 
+//Recursive mergesort
+void merge_sort(int * arr, int l, int r)
+{
+  //printf("\n check left %d right %d",l,r);
+    
+  if (l < r)
+  {
+    int mid = l + ((r-l)/2);
+    merge_sort(arr,l,mid);
+    merge_sort(arr,mid+1,r);
+    
+    //merge back together
+    //copy the halves and combine
+    int leftSize = mid-l+1;
+    int rightSize = r-mid;
+    
+    //create temp arrays
+    int * left = malloc(sizeof(int) * (leftSize));
+    int * right = malloc(sizeof(int) * (rightSize));
+    
+    //copy data
+    for (int z = 0; z < leftSize; z++)
+    {
+      left[z] = arr[l+z];
+    }
+    //printf("\n LEFT \n");
+    //printArray(left,leftSize);
+
+    for (int z = 0; z < rightSize; z++)
+    {
+      right[z] = arr[mid+1+z];
+    }
+
+    //printf("\n RIGHT \n");
+    //printArray(right,rightSize);
+    
+    //merge!
+    int i = 0;
+    int j = 0;
+    int k = l;
+
+    while (k <= r)
+    {
+      //right side empty
+      if (j >= rightSize)
+      {
+        arr[k] = left[i++]; 
+      }
+      //left side empty
+      else if (i >= leftSize)
+      {
+        arr[k] = right[j++]; 
+      }
+      //left side less then right side
+      else if (left[i] < right[j])
+      {
+        arr[k] = left[i++]; 
+      }
+      //right side less then left side
+      else
+      {
+        arr[k] = right[j++];
+      }
+      k++;
+    }
+
+    //dont need temp arrays
+    free(left);
+    free(right);
+  }
+}
+
 //output
 //INSERTION SORT
 //   index 0 value 26
@@ -119,8 +192,16 @@ int main() {
   insertion_sort_biggest_to_smallest(arr,SIZE);
   */
 
+/*
   printf("\nSELECTION SORT\n  ");
   selection_sort(arr,SIZE);
   printArray(arr,SIZE); 
+*/
+  printf("\nMERGE SORT\n");
+  printArray(arr,SIZE); 
+  merge_sort(arr,0,SIZE);
+  printf("\n");
+  printArray(arr,SIZE); 
+
   return 0;
 }
