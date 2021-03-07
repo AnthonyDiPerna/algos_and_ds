@@ -17,6 +17,11 @@
 
 // T: O(n) S: O(m) - Create "hash table" for ascii character keys (n len of str, m len of keys)
 
+// Alternates:
+//              1 Count odds as we go instead of looping through the "hashtable" at the end, 
+//                extra checks per character but save looping time ... tradeoffs
+//              2 Use bit vector to save space vs "hashtable"
+
 int getCharNumber (char c)
 {
   if (c >= 'a' && c <= 'z')
