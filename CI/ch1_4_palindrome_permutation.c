@@ -15,7 +15,7 @@
 //  Odd # of characters - even amount of each character AND 1 odd character
 //  i.e. can have no matter then 1 character that is odd
 
-// T: O(n) S: O(1) - Change string in place, work backwards, assume char array has enough room for the changes
+// T: O(n) S: O(m) - Create "hash table" for ascii character keys (n len of str, m len of keys)
 
 int getCharNumber (char c)
 {
@@ -78,7 +78,6 @@ int main() {
   char testString[] = "otccata"; //tacocat
   
   printf("\nINPUT : test string %s ",testString);
-  
   printf("\nRESULT: is_palindrome_permutation %d ",is_palindrome_permutation(testString));
   
   return 0;
