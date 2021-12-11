@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 #define SIZE (6)
 
@@ -9,6 +10,7 @@
 #define NEWLINE     ('\n')
 #define INVALID_VAL ('%')
 #define ARRAY_LEN   (10001) //String length 10^4 (Just making it big to be safe)
+#define MAX_LINES   (100)
 
 #define VALID_LINE   (0)
 #define INVALID_LINE (-1)
@@ -113,6 +115,26 @@ bool isMatch(char closedParenType)
     return (peek() == getOpenParenType(closedParenType));
 }
 
+//for qsort
+int compare( const void* a , const void* b )
+{
+    const uint64_t ai = *( const uint64_t* )a;
+    const uint64_t bi = *( const uint64_t* )b;
+
+    if( ai < bi )
+    {
+        return -1;
+    }
+    else if( ai > bi )
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
 void calcScore(char * s)
 {
     //some global state ... to clean up eek
@@ -122,9 +144,12 @@ void calcScore(char * s)
     int debugCount = 0;
     lineInfo info = {0,VALID_LINE};
     int i = 0;
-    int score = 0;
+    int corruptScore = 0;
     char firstCorruptChar = ' ';
     int lineCount = 1;
+    uint64_t invalidScores[MAX_LINES] = {0};
+    int invalidScoreCount = 0;
+
     //Loop to end of string 
     for (i = 0; s[i] != TERMINATOR; i++)
     {
@@ -173,8 +198,8 @@ void calcScore(char * s)
                 if (firstCorruptChar == '}') tmp = 1197;
                 if (firstCorruptChar == '>') tmp = 25137; 
 
-                score += tmp;
-                printf("\n  SUB-SCORE %d Corruptchar %c TOTAL-SCORE %d\n",tmp,firstCorruptChar,score);
+                corruptScore += tmp;
+                printf("\n  SUB-SCORE %d Corruptchar %c TOTAL-SCORE %d\n",tmp,firstCorruptChar,corruptScore);
             }
             else if (info.errorCode == VALID_LINE)
             {
@@ -183,6 +208,22 @@ void calcScore(char * s)
                 {
                     info.errorCode = INVALID_LINE;
                     printf("\n   INCOMPLETE - debugCount %d\n",debugCount);
+                    while(!isEmpty())
+                    {
+                        char c = pop();
+                        uint64_t tmp = 0;
+                        
+                        if (c == '(') tmp = 1;
+                        else if (c == '[') tmp = 2;
+                        else if (c == '{') tmp = 3;
+                        else if (c == '<') tmp = 4; 
+                        else {}
+                        invalidScores[invalidScoreCount] = (uint64_t)invalidScores[invalidScoreCount] * (uint64_t)5 + (uint64_t)tmp;
+                        printf("\n  SUB %d CHAR %c CURR_SCORE %ju\n",tmp,c,invalidScores[invalidScoreCount]);
+                    }
+                    printf("\n    INCOMPLETE SCORE %ju \n",invalidScores[invalidScoreCount]);
+                    invalidScoreCount++;
+                    
                 }    
             }
 
@@ -197,7 +238,22 @@ void calcScore(char * s)
         }
     }
 
-    printf("\nSCORE %d TOTAL_LINES %d \n",score,lineCount-1);
+    printf("\nCORRUPT SCORE %d TOTAL_LINES %d \n",corruptScore,lineCount-1);
+    /*
+    printf("Before sorting the list is: \n");
+    for (int j=0; j < invalidScoreCount; j++)
+    {
+        printf("\n       BEFORE SORT INVALID SCORES %d : %ju \n",j,invalidScores[j]);
+    }
+    */
+    qsort(invalidScores, invalidScoreCount, sizeof(uint64_t), compare);
+    printf("\nINVALID SCORE %ju INVALID_LINES %d \n",invalidScores[invalidScoreCount/2],invalidScoreCount);
+    
+    for (int k=0; k < invalidScoreCount; k++)
+    {
+        printf("\n       AFTER SORT INVALID SCORES %d : %ju \n",k,invalidScores[k]);
+    }
+    
             
 
 }
