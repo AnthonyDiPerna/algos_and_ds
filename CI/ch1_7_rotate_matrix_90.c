@@ -11,7 +11,7 @@
 
 //In place matrix rotation
 //Assume - Always square
-void rotate(int matrix[][3], int matrixSize, int* matrixColSize){
+void rotate(int matrix[][3], int matrixSize, int* matrixColSize) {
     int tmp = 0;
     
     //How many rows to process
