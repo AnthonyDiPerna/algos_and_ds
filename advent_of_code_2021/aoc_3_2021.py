@@ -1,4 +1,5 @@
 # aoc_template.py
+#RUN - python3 aoc_3_2021.py aoc_3_puzzle_input.txt
 
 import pathlib
 import sys
